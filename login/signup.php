@@ -17,7 +17,9 @@ $(document).ready(function(){
     });
  }); 
     
-function validateLogin(){
+function validateLogin(methodName){
+    
+    $('#errDiv').text("");
  var rex_name = /^[A-Za-z ]{3,20}$/,
      rex_lastname = /^[A-Za-z ]{3,30}$/;
         
@@ -29,18 +31,22 @@ function validateLogin(){
            pass1 = document.getElementById("password1").value,
            pass2 = document.getElementById("password2").value;
            
+     console.log(fname);
+        console.log(lname);
+        console.log(rex_name.test(fname));
+        
+    
         //validate form data
            if(!fname){
-           errorMsg += "Please enter your first name.</br>";   
-           
+           errorMsg += "Please enter your first name.</br>";
           }else if(!rex_name.test(fname)){
-            errorMsg += "First name should 3 to 20 characters.<br/>"
+            errorMsg += "First name should be an alphabet between 3 to 20 characters.<br/>"
           }
         
         if(!lname){  
            errorMsg += "Please enter your last name.</br>"; 
           }else if(!rex_lastname.test(lname)){
-            errorMsg += "Last name should 3 to 30 characters.<br/>"
+            errorMsg += "First name should be an alphabet between 3 to 20 characters.<br/>"
           }
         
           if(!pass1){  
@@ -53,22 +59,18 @@ function validateLogin(){
             errorMsg += "Passwords should be same.</br>"; 
         }
         
-          console.log(fname);
-        console.log(lname);
-        console.log(uname);
-        
         console.log(errorMsg);
         
         if(errorMsg){
              console.log("in save 2");
-            document.getElementById("errDiv").innerHTML = errorMsg;
+            $('#errDiv').text(errorMsg);
             return false;
         }else{
             console.log("in save 1 ");
               ajaxCall("POST",
-                       {method:"saveUser",
+                       {method:methodName,
                         a:"login",
-                        data:{"firstname":fname,"lastname":lname,"username":uname,"password":pass1}
+                        data:{"firstname":fname,"lastname":lname,"username":uname,"password":pass1},
                        },
                  callbackSaveUser);
         }
@@ -89,21 +91,16 @@ function ajaxCall(GetPost,d,callback){
     
 
 function callbackSaveUser(data, status){
-  console.log("data =>");
-  console.dir(data);
+ 
+     $('#errDiv').text("");
     if(data.success){
-       errDiv.innerHTML = "Signup successful!";
+       $('#errDiv').text("Signup successful!");
         
         var r= $('<input type="button" id="back" value="Go back to login"/>');
         $('#login_redirect').append(r);
         $('#submit').attr('value','Update');
         $('#submit').on('click',function(){
-         ajaxCall("POST",
-                       {method:"updateUser",
-                        a:"login",
-                        data:$('form').serialize(),
-                       },
-                 callbackSaveUser);
+         validateLogin('updateUser');
     });
         $('#back').on('click',function(){
         // header("location: login.php");
@@ -111,10 +108,9 @@ function callbackSaveUser(data, status){
     });
         
     }else{
-         errDiv.innerHTML = data.message;
+          $('#errDiv').text(data.message);
     }	
 }
-
 
 </script>
 </head>
@@ -127,7 +123,7 @@ function callbackSaveUser(data, status){
     Password: <input type="password" name="password" id="password1" ><br/>
     Re-type Password: <input type="password" name="password2" id="password2" ><br/>
         <br/>
-        <input type="submit" name="submit" id="submit" value="Submit" onclick="return validateLogin();">
+        <input type="submit" name="submit" id="submit" value="Submit" onclick='return validateLogin("saveUser");'>
     </form>
     <div id="login_redirect"></div>
      <div id="errDiv"></div>

@@ -27,7 +27,7 @@ function getChatUsers($d){
                 $res["success"]=true;
                 $res["data"]=$data;
                 return json_encode($res);
-            }
+             }
             }
         }catch (mysqli_sql_exception $e) {
             throw new MySQLiQueryException($SQL, $e->getMessage(), $e->getCode());
@@ -39,8 +39,7 @@ function getChatUsers($d){
 	}
 
 function getChatData(){
-    echo "<br>Found chat data<br>";
-   
+ 
     $res = array();
   
     global $mysqli;
@@ -130,9 +129,8 @@ function returnJson ($stmt){
 	header("Cache-Control: no-store, no-cache, must-revalidate");
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
-	//MUST change the content-type
 	header("Content-Type:text/plain");
-	// This will become the response value for the XMLHttpRequest object
+	
     return $data;
 }
 ?>

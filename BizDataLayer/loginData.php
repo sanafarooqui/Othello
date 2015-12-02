@@ -50,7 +50,7 @@ function checkUserLogin($d){
                     $_SESSION['username'] = $username;
                     //$_SESSION['token'] = $token;
                     $_SESSION['userID'] = $userID;
-                    header("location: chat.php");
+                   // header("location: ../chat/chat.php");
                     $res["success"]=true;
                     }
                 }
@@ -73,13 +73,12 @@ function checkUserLogin($d){
         $firstname = $d["firstname"];
         $lastname = $d["lastname"];
         $password = $d["password"];
-        
        
         try {
             global $mysqli;
             $res = array();
            //check username already exists
-            $sql = "Select * from user where username=?";
+            $sql = "Select * from user where BINARY username=?";
             
             if($stmt=$mysqli->prepare($sql)){
 				$stmt->bind_param("s",$username);
@@ -87,9 +86,10 @@ function checkUserLogin($d){
                 if($data){
                     $res["success"]=false;
                     $res["message"]="Username already exists.Please try another username.";
+                    $res["data"]=$data;
                 }else{ 
            
-               $sql="Insert into user(firstname,lastname,username,password) values(?,?,?,?)";
+                $sql="Insert into user(firstname,lastname,username,password) values(?,?,?,?)";
 
                 if($stmt=$mysqli->prepare($sql)){
                     $stmt->bind_param("ssss",$firstname,$lastname,$username,$password);
@@ -98,14 +98,20 @@ function checkUserLogin($d){
                    
                    //???? result is false but its inserting!
                     $res["success"] = true;
-
-                   }
+                    //get the userID
+                    /*$sql = "Select userID from user where username=?";
+            
+                    if($stmt=$mysqli->prepare($sql)){
+                        $stmt->bind_param("s",$username);
+                        $data = returnJson($stmt);
+                         $res["data"] = $data;
+                   }*/
                 }
                 $stmt->close();
                 $mysqli->close();
                 return json_encode($res);
-            }
-			//echo $c;
+          }
+        }
         }catch (mysqli_sql_exception $e) {
             throw new MySQLiQueryException($SQL, $e->getMessage(), $e->getCode());
         }catch (Exception $e) {
@@ -113,15 +119,12 @@ function checkUserLogin($d){
 			//return false;
 			echo 'fail';
         }
-		
 	}
 
 function updateUserDetails($d){
         $username = $d["username"];
         $firstname = $d["firstname"];
         $lastname = $d["lastname"];
-        $password = $d["password"];
-        
        
         try {
             global $mysqli;
@@ -134,10 +137,10 @@ function updateUserDetails($d){
                 $data =  returnJson($stmt);
                    //???? result is false but its inserting!
                     $res["success"] = true;
+                    $res["message"] = "User updated successfully!";
                    }else {
-                $res["success"] = false;
-                $res["message"] = "Error occurred while updating user.";
-                    return json_encode($res);
+                    $res["success"] = false;
+                    $res["message"] = "Error occurred while updating user.";
                 }
                 
                 $stmt->close();

@@ -16,12 +16,39 @@ $userID = 35;
 <head>
   <meta charset='utf-8' />
   <title>Chat Page</title>
- <link href="chat.css" rel="stylesheet">
-     <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link href="chat.css" rel="stylesheet">
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+    
 <script type="text/javascript">
     var username = <?php echo json_encode($username); ?>;
-     var userID = <?php echo json_encode($userID); ?>;
-   
+    var userID = <?php echo json_encode($userID); ?>;
+     
+$(document).ready(function(){
+    
+    getChatData();
+    
+	$("#chatUsers").on('click','li',function (){
+     
+    $("#chatUsers li").css({ 'color': 'blue'});
+    console.dir($(this));
+    $(this).css({ 'color': 'red'});
+     
+    var challengeUser = $(this).text();
+    var challengeUserID = parseInt($(this).id);
+        
+    console.log("challengeUser "+challengeUser);
+    console.log("challengeUserID "+challengeUserID);
+        
+    ajaxCall("POST",{method:"challengeUser",
+                        a:"chat",
+                        data:{"username": username,
+                             "challengeUser":challengeUser,
+                             "challengeUserID":challengeUserID}
+                       },
+                 callbackChallenge);
+  }); 
+});
+    
  function addChat(){
      var chatText = $("chatText").val();
          //get the users logged in to chat
@@ -101,31 +128,6 @@ function callbackChatData(data, status){
 } 
     
  
-$(document).ready(function(){
-    
-	$("#ChatUsers").on('click','li',function (){
-     
-    $("#ChatUsers li").css({ 'color': 'blue'});
-    console.dir($(this));
-    $(this).css({ 'color': 'red'});
-     
-    var challengeUser = $(this).text();
-    var challengeUserID = parseInt($(this).id);
-        
-    console.log("challengeUser "+challengeUser);
-    console.log("challengeUserID "+challengeUserID);
-        
-    ajaxCall("POST",{method:"challengeUser",
-                        a:"chat",
-                        data:{"username": username,
-                             "challengeUser":challengeUser,
-                             "challengeUserID":challengeUserID}
-                       },
-                 callbackChallenge);
-  }); 
-});
-
-    
 function ajaxCall(GetPost,d,callback){
     console.log("in ajax call");
     $.ajax({
@@ -141,19 +143,17 @@ function ajaxCall(GetPost,d,callback){
      
 </script>
 </head>
-<body onload="getChatData();">
+<body>
    
    <div id="header">
 <h1>Othello</h1>
 </div>
 
-<div id="ChatUsers">
+<div id="chatUsers">
      <ul class="">
             <li onclick="" id="user_22">sana</li>
             <li onclick="" id="user_35">Saima</li>
             <li onclick="" id="user_30">Fariha</li>
-            <li><a href="">Another nav item</a></li>
-            <li><a href="">More navigation</a></li>
           </ul>
     <input type="button" value="Play" onClick="playGame();" />
     <input type="button" value="Challenge"/>

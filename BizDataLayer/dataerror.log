@@ -1,0 +1,27 @@
+Exception caught @20:16:09 03.28.12
+    Message: An error occurred while fetching record data
+    SQL: Select * from 546ArchChat where
+    File: /home/course/546/public_html/112/arch/BizDataLayer/chatData.php
+    Line: 57
+    Trace: #0 /home/course/546/public_html/112/arch/svcLayer/chat/chatUtil.php(13): chatData()
+#1 [internal function]: chat(NULL, '69.207.187.195', NULL)
+#2 /home/course/546/public_html/112/arch/mid.php(9): call_user_func('chat', NULL, '69.207.187.195', NULL)
+#3 {main}
+Exception caught @20:17:56 03.28.12
+    Message: An error occurred while fetching record data
+    SQL: Select * from 546ArchChat where
+    File: /home/course/546/public_html/112/arch/BizDataLayer/chatData.php
+    Line: 17
+    Trace: #0 /home/course/546/public_html/112/arch/svcLayer/chat/chatUtil.php(13): chatData()
+#1 [internal function]: chat(NULL, '69.207.187.195', NULL)
+#2 /home/course/546/public_html/112/arch/mid.php(9): call_user_func('chat', NULL, '69.207.187.195', NULL)
+#3 {main}
+Exception caught @14:48:26 04.03.12
+    Message: An error occurred while fetching record data
+    SQL: Select * from 546ArchChat where
+    File: /home/course/546/public_html/112/arch/BizDataLayer/chatData.php
+    Line: 17
+    Trace: #0 /home/course/546/public_html/112/arch/svcLayer/chat/chatUtil.php(13): chatData()
+#1 [internal function]: chat(NULL, '129.21.134.24', NULL)
+#2 /home/course/546/public_html/112/arch/mid.php(9): call_user_func('chat', NULL, '129.21.134.24', NULL)
+#3 {main}

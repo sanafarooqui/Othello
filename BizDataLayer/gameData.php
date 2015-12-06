@@ -1,6 +1,6 @@
 <?php
 ini_set('display_errors', 'On');
-error_reporting(E_ALL);
+error_reporting(E_ALL|E_STRICT);
 mysqli_report(MYSQLI_REPORT_ERROR);
 
 
@@ -27,76 +27,93 @@ if(mysqli_connect_errno()){
 	 game
 	
 */
-function playGameData($d){
-    // echo "<br>Found playGameData<br>";
+function initialGameData($d){
 	global $mysqli;
-     //echo var_dump($d);
+     $res = array();
     
    /* echo $d["playerID0"];
      echo $d["playerID1"];
      echo $d["player0"];
      echo $d["player1"]; */
-    
-    $playerID0 = intVal($d["playerID0"],10);
-    $playerID1 = intVal($d["playerID1"],10);
+     $challengeId = intVal($d["challengeId"],10);
+    $playerID0 = intVal($d["fromID"],10);
+    $playerID1 = intVal($d["toID"],10);
     $color0 = 'white';
     $color1 = 'black';
      $turn = 0;
      $score0 = 0;
      $score1 = 0;
-    
-   // echo var_dump($playerID0);
-    // echo $playerID1;
-    
-    //TODO - remove intVal() ... when it comes from html directly
-    
-	$sql = "INSERT INTO game(playerID0,playerID1,player0,player1,color0,color1,turn,score0,score1) values(?,?,?,?,?,?,?,?,?)";
+
+	$sql = "INSERT INTO game(challengeId,playerID0,playerID1,player0,player1,color0,color1,turn,score0,score1) values(?,?,?,?,?,?,?,?,?,?)";
 	try{
 		if($stmt=$mysqli->prepare($sql)){
-		    $stmt->bind_param("iissssiii",$playerID0,$playerID1,$d["player0"],$d["player1"],$color0,$color1,$turn,$score0,$score1);
-			$stmt->execute();
+		   // 
+			$stmt->bind_param("iiissssiii",$challengeId,$playerID0,$playerID1,$d["fromName"],$d["toName"],$color0,$color1,$turn,$score0,$score1);
+            $stmt->execute();
+            
             $result = mysqli_stmt_get_result($stmt);
            // echo "<br> result login insert <br/>";
-            //echo var_dump($result);
+            $gameid=$mysqli->insert_id;
+            
             $stmt->close();
             $mysqli->close();
            
-            $res["success"]=true;
-            return json_encode($res);
+             $res["success"]=true;
+               $res["gameID"]=$gameid;
+            $res["responseText"]=$d;
 		}else{
-        	throw new Exception("An error occurred while setting up data");
+             $res["success"]=false;
         }
+         return json_encode($res);
 	}catch (mysqli_sql_exception $e) {
             throw new MySQLiQueryException($SQL, $e->getMessage(), $e->getCode());
     }catch (Exception $e) {
-        log_error($e, $sql, null);
+         echo "ex: ".$e; 
+       // log_error($e, $sql, null);
 		return false;
     }
 }
+
+function joinGameChallenge($d){
+    $fromID = intVal($d["fromID"],10);
+    $challengeId = intVal($d["challengeId"],10);
+    $res = array();
+  
+    global $mysqli;
+    //getting the chats for todays date
+    $sql="Select gameID from game where challengeId=? and playerID0=?;";
+    try {
+        if($stmt=$mysqli->prepare($sql)){
+            $stmt->bind_param("ii",$challengeId,$fromID);
+            $data = returnJson($stmt);
+            $stmt->close();
+            $mysqli->close();
+           
+            if(!$data || empty($data)){
+                $res["success"]=false;
+                $res["message"]="No challenges accepted.";
+            }else{
+                $res["success"]=true;
+                $res["response"]=$data;
+            }
+             return json_encode($res);
+        }
+        }catch (mysqli_sql_exception $e) {
+            throw new MySQLiQueryException($SQL, $e->getMessage(), $e->getCode());
+        }catch (Exception $e) {
+            echo log_error($e, $sql, null);
+			//return false;
+			echo 'fail';
+        }
+	}
 
 /*************************
 	startData
 	
 */
-function startData($gameId){
+function layoutInitialGame1($gameId){
 	global $mysqli;
-	//return $gameId.'sdf';
-	//simple test for THIS 'game' - resets the last move and such to empty
-	/*$sql = "UPDATE game SET player0_pieceID=null, player0_boardI=null, player0_boardJ=null, player1_pieceID=null, player1_boardI=null, player1_boardJ=null WHERE game_id=?";
-	try{
-		if($stmt=$mysqli->prepare($sql)){
-			//bind parameters for the markers (s - string, i - int, d - double, b - blob)
-			$stmt->bind_param("i",$gameId);
-			$stmt->execute();
-			$stmt->close();
-		}else{
-        	throw new Exception("An error occurred while setting up data");
-        }
-	}catch (Exception $e) {
-        log_error($e, $sql, null);
-		return false;
-    }*/
-   
+  
     //get the init of the game
 	$sql = "SELECT * FROM game WHERE gameID=?";
 	try{
@@ -106,14 +123,12 @@ function startData($gameId){
 			$data=returnJson($stmt);
 			$mysqli->close();
             
-           // echo "in start game";
-          //  echo var_dump($data);
-            
-			return $data;
+			return json_encode($data);
 		}else{
             throw new Exception("An error occurred while fetching record data");
         }
 	}catch (Exception $e) {
+        echo $e;
         log_error($e, $sql, null);
 		return false;
     }
@@ -123,7 +138,7 @@ function startData($gameId){
 */
 function checkTurnData($gameId){
 	global $mysqli;
-	$sql="SELECT whoseTurn FROM checkers_games WHERE game_id=?";
+	$sql="SELECT turn FROM game WHERE gameID=?";
 	try{
 		if($stmt=$mysqli->prepare($sql)){
 			$stmt->bind_param("i",$gameId);
@@ -247,6 +262,6 @@ function returnJson ($stmt){
 	//MUST change the content-type
 	header("Content-Type:plain/text");
 	// This will become the response value for the XMLHttpRequest object
-    return json_encode($data);
+    return $data;
 }
 ?>

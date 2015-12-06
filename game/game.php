@@ -1,3 +1,13 @@
+<?php
+  session_start();
+    if(!isset($_SESSION['userID']))
+    {
+        die("You are not logged in!");
+    }
+    $userID = $_SESSION['userID'];
+    $username = $_SESSION['username'];
+    $gameId = $_GET['gameID'];
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,28 +27,28 @@
 	<script src="http://code.jquery.com/jquery-latest.js"></script>
 	<script src="../js/Objects/Cell.js" type="text/javascript"></script>
 	<script src="../js/Objects/Piece.js" type="text/javascript"></script>
-	<script src="../js/gameFunctions.js" type="text/javascript"></script>
+	 <script src="../js/gameFunctions.js" type="text/javascript"></script>
 	<script src="../js/ajaxFunctions.js" type="text/javascript"></script>
 	<script type="text/javascript">
         
-       
+    var currentPlayer = <?php echo json_encode($username); ?>;
+    var currentPlayerID = <?php echo json_encode($userID); ?>;
+    var gameId = <?php echo $_GET['gameID']; ?>;
+    var opponentPlayer;
 $(document).ready(function(){
-    
+  
             //hardcoding the players and saving them to the db ..should happen when the player is challenged..
            // var current_user = $SESSION("username");
-            var player = "san_far";
+           /* var player = "san_far";
             var player0 = "san_far";
             var playerID0 = 35;
             var player1 = "saf6857";
             var playerID1 = 34;
-            var gameId = 6;
+            var gameId = 6;*/
             
-   /* ajaxCall("POST",{method:"playGame",
+   /*ajaxCall("POST",{method:"layoutInitialGame",
                         a:"game",
-                        data:{"player0": player0,
-                             "playerID0":playerID0,
-                             "player1":player1,  
-                             "playerID1":playerID1}
+                        data:gameId
                        },
                  callbackplayGame);
             
@@ -46,7 +56,7 @@ $(document).ready(function(){
 	
             } */
             
-        initGameAjax('start', gameId);
+        initGameAjax('layoutInitialGame', gameId);
   }); 
 
 	</script>
@@ -76,4 +86,5 @@ $(document).ready(function(){
 	</text>
 </svg>
 </body>
+   
 </html>

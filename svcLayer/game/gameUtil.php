@@ -4,16 +4,23 @@
 //if so - prepare data and make call to data/biz layer
 
 //error_reporting (E_ALL);
-require "./BizDataLayer/gameData.php";
+require_once('./BizDataLayer/gameData.php');
+
 //Why include the database stuff here?  (not doing any db stuff in the service layer!)
 //because it forces all to go through the service layer in order to get to the bizLayer
 //if someone tries to access the bizLayer on it's own the code will fail since there isn't a connection!
 
 
-function playGame($d){
+function joinGame($d){
 
-	return playGameData($d);
+	return joinGameChallenge($d);
 }
+
+function startGame($d){
+
+	return initialGameData($d);
+}
+
 /*************************
 	start
 	takes: 		gameId
@@ -21,10 +28,8 @@ function playGame($d){
 	returns:	gameInfo
 				[{"game_id":38,"whoseTurn":1,"player0_name":"Dan","player0_pieceID":null,"player0_boardI":null,"player0_boardJ":null,"player1_name":"Fred","player1_pieceID":null,"player1_boardI":null,"player1_boardJ":null,"last_updated":"0000-00-00 00:00:00"}]
 */
-function start($d){
-	//Should they be here?  (check)
-	//if true:
-	return startData($d);
+function layoutInitialGame($d,$ip,$token){
+	return layoutInitialGame1($d);
 }
 /*************************
 	changeTurn
@@ -35,7 +40,7 @@ function start($d){
 function changeTurn($d){
 	//can they change the turn?
 	//if true:
-	changeTurnData($d);
+	return changeTurnData($d);
 }
 /*************************
 	checkTurn

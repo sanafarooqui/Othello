@@ -4,6 +4,15 @@
     text-align:center;
     padding:5px;
 }
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+
+.redClass{
+color: red
+}
+
 #chatUsers {
     line-height:30px;
     background-color:#eeeeee;

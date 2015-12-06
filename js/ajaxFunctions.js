@@ -21,7 +21,7 @@ function ajaxCall(GetPost,d,callback){
 function initGameAjax(whatMethod,val){
     console.log("initGameAjax");
 	//data is gameId
-	ajaxCall("POST",{method:"start",a:"game",data:6},callbackInit);
+	ajaxCall("POST",{method:whatMethod,a:"game",data:val},callbackInit);
 }
 ////callbackInit/////
 //callback for initGameAjax
@@ -32,11 +32,11 @@ function callbackInit(jsonObj){
     console.log(jsonObj);
 	turn = jsonObj[0].turn;
     
-	if(player == jsonObj[0].player0){
-		player2 = jsonObj[0].player1;
+	if(currentPlayer == jsonObj[0].player0){
+		opponentPlayer = jsonObj[0].player1;
 		playerId = 0;
 	}else{
-		player2 = jsonObj[0].player0;
+		opponentPlayer = jsonObj[0].player0;
 		playerId = 1;
 	}
 	//document.getElementById('output2').firstChild.data='playerId '+playerId+ ' turn '+turn;
@@ -75,9 +75,9 @@ function checkTurnAjax(whatMethod,val){
 //callback for checkTurnAjax
 ////////////////
 function callbackcheckTurn(jsonObj){
-	if(jsonObj[0].whoseTurn == playerId){
+	if(jsonObj[0].turn == playerId){
 		//switch turns
-		turn=jsonObj[0].whoseTurn;
+		turn=jsonObj[0].turn;
 		//get the data from the last guys move
 		getMoveAjax('getMove',gameId);
 	}

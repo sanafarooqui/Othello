@@ -79,7 +79,7 @@ function callbackloginUser(data, status){
         <br/>
         <input type="submit" name="submit" value="Submit" onclick="return validateLogin();">
     </form>
-    <a href="signup.html">Sign Up</a>
+    <a href="signup.php">Sign Up</a>
    <div id="errorDiv"></div>
     
 </body>

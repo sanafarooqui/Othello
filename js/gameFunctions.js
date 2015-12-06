@@ -58,8 +58,8 @@ function gameInit(){
 	//put the go() method on the svg doc.
 	document.getElementsByTagName('svg')[0].addEventListener('mousemove',go,false);
 	//put the player in the text
-	document.getElementById('youPlayer').firstChild.data+=player;
-	document.getElementById('opponentPlayer').firstChild.data+=player2;
+	document.getElementById('youPlayer').firstChild.data+=currentPlayer;
+	document.getElementById('opponentPlayer').firstChild.data+=opponentPlayer;
 	
 	//set the colors of whose turn it is
 	if(turn==playerId){

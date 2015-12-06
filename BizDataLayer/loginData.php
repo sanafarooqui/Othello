@@ -45,14 +45,14 @@ function checkUserLogin($d){
                         $stmt->execute();
                          $result = mysqli_stmt_get_result($stmt);
                        //???? result is false but its inserting!
-                    }
                     
-                    $_SESSION['username'] = $username;
-                    //$_SESSION['token'] = $token;
-                    $_SESSION['userID'] = $userID;
-                   // header("location: ../chat/chat.php");
-                    $res["success"]=true;
+                        $_SESSION['username'] = $d1["username"];
+                        //$_SESSION['token'] = $token;
+                        $_SESSION['userID'] = $d1["userID"];
+                       // header("location: ../chat/chat.php");
+                        $res["success"]=true;
                     }
+                 }
                 }
                  $stmt->close();
                  $mysqli->close();
@@ -156,6 +156,38 @@ function updateUserDetails($d){
         }
 		
 	}
+
+function logOutUser($d){
+        $userID = $d["userID"];
+        try {
+            global $mysqli;
+            $res = array();
+           //check username already exists
+            $sql = "DELETE from login where userID=?";
+            
+            if($stmt=$mysqli->prepare($sql)){
+				$stmt->bind_param("i",$userID);
+                $data =  returnJson($stmt);
+                   //???? result is false but its inserting!
+                    $res["success"] = true;
+                   }else {
+                    $res["success"] = false;
+                }
+                
+                $stmt->close();
+                $mysqli->close();
+                return json_encode($res);
+            
+        }catch (mysqli_sql_exception $e) {
+            throw new MySQLiQueryException($SQL, $e->getMessage(), $e->getCode());
+        }catch (Exception $e) {
+            echo log_error($e, $sql, null);
+			//return false;
+			echo 'fail';
+        }
+		
+	}
+
 
 
 

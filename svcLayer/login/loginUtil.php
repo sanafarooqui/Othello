@@ -21,6 +21,12 @@ function updateUser($d,$ip,$token){
 	return updateUserDetails($d);
 }
 
+function logOut($d,$ip,$token){
+	
+	return logOutUser($d);
+}
+
+
 
 
 ?>

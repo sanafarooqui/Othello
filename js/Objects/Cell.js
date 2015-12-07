@@ -25,10 +25,22 @@ function Cell(myParent,id,size,col,row) {
 	this.x = this.col * this.size;
 	this.y = this.row * this.size;
 	this.color = (((this.row+this.col)%2) == 0) ? 'black' : 'white'
-	this.droppable = (((this.row+this.col)%2) == 0) ? true : false
-	
+	//this.droppable = (((this.row+this.col)%2) == 0) ? true : false
+	this.droppable = true;
 	//create it...
 	this.object = this.create();
+   // console.log(this);
+    //console.log(this.object);
+    
+   // this.addEventListener('mousedown',function(){ 
+     //       console.log(this.id);},false);
+    
+   /* if(this.player == playerId){
+		this.addEventListener('mousedown',function(){ 
+            console.log(this.id);},false);	// add a mousedown event listener to your piece so that it can be dragged.
+	}else{
+		this.addEventListener('mousedown',nypwarning,false);	//tell the user that isn't his piece!
+	}*/
 	this.parent.appendChild(this.object);
 	this.myBBox = this.getMyBBox();
 	
@@ -50,7 +62,12 @@ Cell.prototype={
 		rectEle.setAttributeNS(null,'height',this.size+'px');
 		rectEle.setAttributeNS(null,'class','cell_'+this.color);
 		rectEle.setAttributeNS(null,'id',this.id);
-		rectEle.onclick=function(){alert(this.id);};
+		rectEle.onclick=function(){
+            console.log(this.id);
+            checkValidCell(this.id);
+            //check if its a valid cell/droppable
+         
+        };
 		return rectEle;
 	},
 	//get my bbox

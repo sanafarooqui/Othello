@@ -13,6 +13,7 @@ var mover='';					//hold the id of the thing I'm moving
 var turn;						//hold whose turn it is (0 or 1)
 
 function gameInit(){
+    	console.log("in game init");
 	//create a parent to stick board in...
 	var gEle=document.createElementNS(svgns,'g');
 	gEle.setAttributeNS(null,'transform','translate('+BOARDX+','+BOARDY+')');
@@ -27,14 +28,14 @@ function gameInit(){
 			boardArr[i][j]=new Cell(document.getElementById('game_'+gameId),'cell_'+j+i,75,j,i);
 		}
 	}
-	
+	console.log("in game init");
 	//new Piece(board,player,cellRow,cellCol,type,num)
 	//create red
 	pieceArr[0]=new Array();
 	var idCount=0;
-	for(i=0;i<8;i++){
-		for(j=0;j<3;j++){
-			if((i+j)%2==0){
+	for(i=0;i<5;i++){
+		for(j=0;j<5;j++){
+			if((i==3 && j==3) || (i==4 && j==4)){
 				pieceArr[0][idCount]=new Piece('game_'+gameId,0,j,i,'Checker',idCount);
 				idCount++;
 			}
@@ -44,9 +45,9 @@ function gameInit(){
 	//create green
 	pieceArr[1]=new Array();
 	idCount=0
-	for(i=0;i<8;i++){
-		for(j=5;j<8;j++){
-			if((i+j)%2==0){
+	for(i=0;i<5;i++){
+		for(j=0;j<5;j++){
+			if((i==3 && j==4) || (i==4 && j==3)){
 				pieceArr[1][idCount]=new Piece('game_'+gameId,1,j,i,'Checker',idCount);
 				idCount++;
 			}
@@ -158,6 +159,65 @@ function checkHit(x,y,which){
 		}	
 	}
 	return false;
+}
+
+function checkValidCell(cellid){
+    console.log("checkValidCell"+cellid);
+    //get i,j from cell id
+    var col = parseInt(cellid.charAt(5));
+    var row = parseInt(cellid.charAt(6));
+    var cellObj = boardArr[row][col];
+    
+    console.log(boardArr[row][col]);
+    if(cellObj.droppable && cellObj.occupied == ''){
+        //determining if surrounding cells have opponents piece
+        for(var x=col-1;x<=col+1;x++){
+             
+            for(var y=row-1;y<=row+1;y++){
+                //not considering the current cell
+               
+                 console.log("boardArr");
+                 console.log(boardArr[y][x]);
+                if(!(x==col && y==row)){
+                     console.log("x:"+x);
+                console.log("y:"+y);
+                    if(boardArr[y][x].occupied != ''){
+                      
+                        var pieceID = boardArr[y][x].occupied;
+                         console.log("pieceID");
+                        console.log(pieceID);
+                        if(playerId != getPiece(pieceID).player){
+                            console.log("found oppnent piece!");
+                            //find if there are pieces of the same player around..
+                            var i = x-col;
+                            var j = y-row;
+                            var nextCelli = x+i;
+                            var nextCellj = y+j;
+                             console.log("nextCelli :"+nextCelli);
+                             console.log("nextCellj :"+nextCellj);
+                            while(boardArr[nextCellj][nextCelli].occupied != ''){
+                            //find the next cell to check your own piece 
+                              var pieceID = boardArr[nextCellj][nextCelli].occupied;
+                                console.log("pieceID");
+                                console.log(pieceID);
+                                if(playerId != getPiece(pieceID).player){
+                                    //its opponents piece ..keep looping till you hit empty cell or your player
+                                    nextCelli+=i;
+                                    nextCellj+=j;
+                                    continue;
+                                }else{
+                                    console.log("found the same piece!");
+                                    //call flipping method
+                                    break;
+                                }
+                        
+                             }
+                        }
+                     }
+                  }
+             }
+          }
+    }
 }
 
 ///////////////////////////////Utilities////////////////////////////////////////

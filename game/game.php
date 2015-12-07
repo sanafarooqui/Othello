@@ -35,7 +35,7 @@
     var currentPlayerID = <?php echo json_encode($userID); ?>;
     var gameId = <?php echo $_GET['gameID']; ?>;
     var opponentPlayer;
-$(document).ready(function(){
+   $(document).ready(function(){
   
             //hardcoding the players and saving them to the db ..should happen when the player is challenged..
            // var current_user = $SESSION("username");

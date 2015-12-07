@@ -59,7 +59,7 @@ function gameInit(){
 	//put the go() method on the svg doc.
 	document.getElementsByTagName('svg')[0].addEventListener('mousemove',go,false);
 	//put the player in the text
-	document.getElementById('youPlayer').firstChild.data+=currentPlayer;
+	document.getElementById('youPlayer').firstChild.data+=currentPlayer +",current playerid:"+playerId+"1=green,0=red";
 	document.getElementById('opponentPlayer').firstChild.data+=opponentPlayer;
 	
 	//set the colors of whose turn it is
@@ -174,10 +174,10 @@ function checkValidCell(cellid){
         for(var x=col-1;x<=col+1;x++){
              
             for(var y=row-1;y<=row+1;y++){
-                //not considering the current cell
                
                  console.log("boardArr");
                  console.log(boardArr[y][x]);
+                 //not considering the current cell
                 if(!(x==col && y==row)){
                      console.log("x:"+x);
                 console.log("y:"+y);
@@ -187,27 +187,35 @@ function checkValidCell(cellid){
                          console.log("pieceID");
                         console.log(pieceID);
                         if(playerId != getPiece(pieceID).player){
-                            console.log("found oppnent piece!");
-                            //find if there are pieces of the same player around..
-                            var i = x-col;
-                            var j = y-row;
-                            var nextCelli = x+i;
-                            var nextCellj = y+j;
+                             console.log("found oppnent piece!");
+                             
+                            var flipPieceArr = new Array();
+                            flipPieceArr.push(getPiece(pieceID));
+                            //keep checking the same row/col/diag to find '' or your piece
+                            var i = col-x;
+                            var j = row-y;
+                            var nextCelli = x-i;
+                            var nextCellj = y-j;
+                            //save pieces to be flipped in an array
+                           
                              console.log("nextCelli :"+nextCelli);
                              console.log("nextCellj :"+nextCellj);
                             while(boardArr[nextCellj][nextCelli].occupied != ''){
                             //find the next cell to check your own piece 
-                              var pieceID = boardArr[nextCellj][nextCelli].occupied;
-                                console.log("pieceID");
-                                console.log(pieceID);
+                                pieceID = boardArr[nextCellj][nextCelli].occupied;
+                                
                                 if(playerId != getPiece(pieceID).player){
+                                    console.log("pieceID");
+                                    console.log(pieceID);
+                                    flipPieceArr.push(getPiece(pieceID));
                                     //its opponents piece ..keep looping till you hit empty cell or your player
-                                    nextCelli+=i;
-                                    nextCellj+=j;
+                                    nextCelli-=i;
+                                    nextCellj-=j;
                                     continue;
                                 }else{
                                     console.log("found the same piece!");
                                     //call flipping method
+                                    placePieceAndFlip(col,row,flipPieceArr);
                                     break;
                                 }
                         
@@ -218,6 +226,31 @@ function checkValidCell(cellid){
              }
           }
     }
+}
+
+function placePieceAndFlip(col,row,flipPieceArr){
+    console.log("placePieceAndFlip : "+col+" "+row);
+    console.dir(flipPieceArr);
+    console.log("pieceArr.length++ : "+pieceArr.length);
+    var count = pieceArr[playerId].length++;
+    
+ pieceArr[playerId][count]=new Piece('game_'+gameId,playerId,row,col,'Checker',count);
+    
+    //flip
+    for(var x=0;x<flipPieceArr.length;x++){
+        flipPieceArr[x].current_cell.notOccupied();
+        var newCount = count++;
+        pieceArr[playerId][newCount]=new Piece('game_'+gameId,playerId,flipPieceArr[x].current_cell.row,flipPieceArr[x].current_cell.col,'Checker',newCount);
+       
+        //remove it from pieceArr
+         for(var y=0,len=pieceArr[Math.abs(playerId-1)].length;y<len;y++){
+            if(pieceArr[Math.abs(playerId-1)].id == flipPieceArr[x].id){
+             //remove
+                 pieceArr[Math.abs(playerId-1)].splice(x,1);
+            }
+         }
+    }
+
 }
 
 ///////////////////////////////Utilities////////////////////////////////////////

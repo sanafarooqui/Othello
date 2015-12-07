@@ -22,6 +22,20 @@ function startGame($d){
 }
 
 /*************************
+	checkTurn
+	takes: gameId
+	uses in bizLayer: gameBiz.php->checkTurnData
+	returns:	whoseTurn
+				[{"whoseTurn":1}]
+*/
+function checkTurn($d){
+	//Can they check is it my turn yet?
+	//if true:
+	return checkTurnData($d);
+	
+}
+
+/*************************
 	start
 	takes: 		gameId
 	uses in bizLayer: gameBiz.php->startData
@@ -42,19 +56,7 @@ function changeTurn($d){
 	//if true:
 	return changeTurnData($d);
 }
-/*************************
-	checkTurn
-	takes: gameId
-	uses in bizLayer: gameBiz.php->checkTurnData
-	returns:	whoseTurn
-				[{"whoseTurn":1}]
-*/
-function checkTurn($d){
-	//Can they check is it my turn yet?
-	//if true:
-	return checkTurnData($d);
-	
-}
+
 /*************************
 	changeBoard
 	takes: gameId~pieceId~boardI~boardJ~playerId
